@@ -16,6 +16,7 @@ RUN     apt-get -y install python-django-tagging python-simplejson python-memcac
 
 RUN     pip install Twisted==11.1.0
 RUN     pip install pytz
+RUN     pip install django-cors-headers
 RUN     npm install ini chokidar
 
 # Checkout the stable branches of Graphite, Carbon and Whisper and install from there
@@ -61,6 +62,7 @@ ADD     ./statsd/config.js /src/statsd/config.js
 # Configure Whisper, Carbon and Graphite-Web
 ADD     ./graphite/initial_data.json /opt/graphite/webapp/graphite/initial_data.json
 ADD     ./graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
+ADD     ./graphite/app_settings.py /opt/graphite/webapp/graphite/app_settings.py
 ADD     ./graphite/carbon.conf /opt/graphite/conf/carbon.conf
 ADD     ./graphite/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
 ADD     ./graphite/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
