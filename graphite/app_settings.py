@@ -76,4 +76,5 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 GRAPHITE_WEB_APP_SETTINGS_LOADED = True
 
-CORS_ORIGIN_ALLOW_ALL = True
+import os
+CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split()
