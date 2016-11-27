@@ -1,3 +1,4 @@
+
 FROM     scaleway/ubuntu:14.04
 
 # ---------------- #
@@ -12,11 +13,11 @@ RUN     apt-get -y install software-properties-common
 RUN     add-apt-repository -y ppa:chris-lea/node.js
 RUN     apt-get -y update
 RUN     apt-get -y install python-django-tagging python-simplejson python-memcache python-ldap python-cairo python-pysqlite2 python-support \
-                           python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev
+                           python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev libffi-dev
 
 RUN     pip install Twisted==11.1.0
-RUN     pip install Django==1.5
 RUN     pip install pytz
+RUN     pip install django-cors-headers
 RUN     npm install ini chokidar
 
 # Checkout the stable branches of Graphite, Carbon and Whisper and install from there
@@ -34,8 +35,9 @@ RUN     git clone https://github.com/graphite-project/carbon.git /src/carbon    
 
 RUN     git clone https://github.com/graphite-project/graphite-web.git /src/graphite-web  &&\
         cd /src/graphite-web                                                              &&\
-        git checkout 0.9.x                                                                &&\
-        python setup.py install
+        python setup.py install                                                           &&\
+        pip install -r requirements.txt                                                   &&\
+        python check-dependencies.py
 
 # Install StatsD
 RUN     git clone https://github.com/etsy/statsd.git /src/statsd                                                                        &&\
@@ -61,6 +63,7 @@ ADD     ./statsd/config.js /src/statsd/config.js
 # Configure Whisper, Carbon and Graphite-Web
 ADD     ./graphite/initial_data.json /opt/graphite/webapp/graphite/initial_data.json
 ADD     ./graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
+ADD     ./graphite/app_settings.py /opt/graphite/webapp/graphite/app_settings.py
 ADD     ./graphite/carbon.conf /opt/graphite/conf/carbon.conf
 ADD     ./graphite/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
 ADD     ./graphite/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
@@ -69,7 +72,8 @@ RUN     touch /opt/graphite/storage/graphite.db /opt/graphite/storage/index
 RUN     chown -R www-data /opt/graphite/storage
 RUN     chmod 0775 /opt/graphite/storage /opt/graphite/storage/whisper
 RUN     chmod 0664 /opt/graphite/storage/graphite.db
-RUN     cd /opt/graphite/webapp/graphite && python manage.py syncdb --noinput
+RUN     cp /src/graphite-web/webapp/manage.py /opt/graphite/webapp
+RUN     cd /opt/graphite/webapp/ && python manage.py migrate --run-syncdb --noinput
 
 # Configure Grafana
 ADD     ./grafana/custom.ini /opt/grafana/conf/custom.ini
