@@ -1,4 +1,4 @@
-FROM     ubuntu:14.04
+FROM     scaleway/ubuntu:14.04
 
 # ---------------- #
 #   Installation   #
