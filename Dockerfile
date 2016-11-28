@@ -16,6 +16,7 @@ RUN     apt-get -y install python-django-tagging python-simplejson python-memcac
                            python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev libffi-dev
 
 RUN     pip install Twisted==11.1.0
+RUN     pip install Django==1.5
 RUN     pip install pytz
 RUN     pip install django-cors-headers
 RUN     npm install ini chokidar
@@ -73,8 +74,6 @@ RUN     chown -R www-data /opt/graphite/storage
 RUN     chmod 0775 /opt/graphite/storage /opt/graphite/storage/whisper
 RUN     chmod 0664 /opt/graphite/storage/graphite.db
 RUN     cp /src/graphite-web/webapp/manage.py /opt/graphite/webapp
-
-RUN     pip install Django==1.5
 RUN     cd /opt/graphite/webapp/ && python manage.py migrate --run-syncdb --noinput
 
 # Configure Grafana
