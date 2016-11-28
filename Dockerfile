@@ -16,7 +16,8 @@ RUN     apt-get -y install python-django-tagging python-simplejson python-memcac
                            python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev libffi-dev
 
 RUN     pip install Twisted==11.1.0
-RUN     pip install Django==1.5
+RUN     pip install --upgrade pip
+RUN     pip install django==1.9.*
 RUN     pip install pytz
 RUN     pip install django-cors-headers
 RUN     npm install ini chokidar
