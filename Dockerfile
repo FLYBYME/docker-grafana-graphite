@@ -73,6 +73,8 @@ RUN     chown -R www-data /opt/graphite/storage
 RUN     chmod 0775 /opt/graphite/storage /opt/graphite/storage/whisper
 RUN     chmod 0664 /opt/graphite/storage/graphite.db
 RUN     cp /src/graphite-web/webapp/manage.py /opt/graphite/webapp
+
+RUN     pip install Django==1.5
 RUN     cd /opt/graphite/webapp/ && python manage.py migrate --run-syncdb --noinput
 
 # Configure Grafana
